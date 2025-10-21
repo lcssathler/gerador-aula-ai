@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gerador de Planos de Aula — Demo</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:24px}
+    form{display:grid;gap:8px;max-width:720px}
+    input,select,textarea,button{padding:8px;font-size:14px}
+    pre{background:#f6f8fa;padding:12px;border-radius:6px;overflow:auto}
+    header{margin-bottom:16px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gerador de Planos de Aula</h1>
+    <p>Preencha o formulário abaixo e gere um plano de aula usando Gemini + Supabase.</p>
+  </header>
+
+  <main>
+    <form id="lessonForm">
+      <input name="tema" placeholder="Tema da aula" required />
+      <input name="serie" placeholder="Série / Ano (ex: 5º ano)" required />
+      <input name="disciplina" placeholder="Disciplina (ex: Matemática)" required />
+      <input name="duracao" type="number" name="duracao" placeholder="Duração (minutos)" required />
+      <select name="nivel_dificuldade" required>
+        <option value="">Nível de dificuldade</option>
+        <option value="Básico">Básico</option>
+        <option value="Intermediário">Intermediário</option>
+        <option value="Avançado">Avançado</option>
+      </select>
+      <textarea name="contexto" placeholder="Contexto / observações (opcional)" rows="3"></textarea>
+      <button type="submit">Gerar Plano</button>
+    </form>
+
+    <section id="result" style="margin-top:18px"></section>
+  </main>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
