@@ -1,10 +1,11 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Planos de Aula</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <h1>Gerador de Planos de Aula</h1>
@@ -32,6 +33,7 @@
     <p><strong>Nível de Dificuldade:</strong> <span id="plano-nivel"></span></p>
     <p><strong>Introdução:</strong> <span id="plano-introducao"></span></p>
     <p><strong>Objetivo BNCC:</strong> <span id="plano-objetivo"></span></p>
+    <button id="export-pdf" class="export-btn">Exportar como PDF</button>
     <h3>Passo a Passo</h3>
     <ol id="plano-passo-a-passo"></ol>
     <h3>Rúbrica de Avaliação</h3>
@@ -50,120 +52,5 @@
   <div id="error" class="error" style="display: none;"></div>
 
   <script src="script.js"></script>
-</body>
-</html> -->
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de Planos de Aula</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <h1>Gerador de Planos de Aula</h1>
-  <form id="form">
-    <input name="tema" placeholder="Tema" required />
-    <input name="serie" placeholder="Série" required />
-    <input name="disciplina" placeholder="Disciplina" required />
-    <input name="duracao" type="number" placeholder="Duração (minutos)" required />
-    <select name="nivel_dificuldade" required>
-      <option value="">Selecione...</option>
-      <option value="Básico">Básico</option>
-      <option value="Intermediário">Intermediário</option>
-      <option value="Avançado">Avançado</option>
-    </select>
-    <textarea name="contexto" placeholder="Contexto opcional"></textarea>
-    <button type="submit">Gerar Plano</button>
-  </form>
-
-  <div id="resultado" class="plano-container" style="display: none;">
-    <h2>Plano de Aula</h2>
-    <p><strong>Tema:</strong> <span id="plano-tema"></span></p>
-    <p><strong>Série:</strong> <span id="plano-serie"></span></p>
-    <p><strong>Disciplina:</strong> <span id="plano-disciplina"></span></p>
-    <p><strong>Duração:</strong> <span id="plano-duracao"></span> minutos</p>
-    <p><strong>Nível de Dificuldade:</strong> <span id="plano-nivel"></span></p>
-    <p><strong>Introdução:</strong> <span id="plano-introducao"></span></p>
-    <p><strong>Objetivo BNCC:</strong> <span id="plano-objetivo"></span></p>
-    <h3>Passo a Passo</h3>
-    <ol id="plano-passo-a-passo"></ol>
-    <h3>Rúbrica de Avaliação</h3>
-    <table class="rubrica-table">
-      <thead>
-        <tr>
-          <th>Critério</th>
-          <th>Descrição</th>
-        </tr>
-      </thead>
-      <tbody id="plano-rubrica"></tbody>
-    </table>
-  </div>
-
-  <div id="loading" class="loading" style="display: none;">Gerando plano...</div>
-  <div id="error" class="error" style="display: none;"></div>
-
-  <script>
-    const form = document.getElementById("form");
-    const resultado = document.getElementById("resultado");
-    const loading = document.getElementById("loading");
-    const error = document.getElementById("error");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      resultado.style.display = "none";
-      error.style.display = "none";
-      loading.style.display = "block";
-
-      const data = Object.fromEntries(new FormData(form));
-      data.duracao = parseInt(data.duracao);
-
-      try {
-        const resp = await fetch("/api/gerar-plano", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const json = await resp.json();
-        if (!resp.ok || !json.sucesso || !json.plano) {
-          throw new Error(json.erro || "Falha ao gerar o plano de aula");
-        }
-
-        document.getElementById("plano-tema").textContent = data.tema;
-        document.getElementById("plano-serie").textContent = data.serie;
-        document.getElementById("plano-disciplina").textContent = data.disciplina;
-        document.getElementById("plano-duracao").textContent = data.duracao;
-        document.getElementById("plano-nivel").textContent = data.nivel_dificuldade;
-        document.getElementById("plano-introducao").textContent = json.plano.introducao;
-        document.getElementById("plano-objetivo").textContent = json.plano.objetivo_bncc;
-
-        const passoAPassoList = document.getElementById("plano-passo-a-passo");
-        passoAPassoList.innerHTML = "";
-        const passosArray = Object.values(json.plano.passo_a_passo); 
-        passosArray.forEach(passo => {
-          const li = document.createElement("li");
-          li.textContent = passo;
-          passoAPassoList.appendChild(li);
-        });
-
-        const rubricaTable = document.getElementById("plano-rubrica");
-        rubricaTable.innerHTML = "";
-        for (const [criterio, descricao] of Object.entries(json.plano.rubrica)) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${criterio}</td><td>${descricao}</td>`;
-          rubricaTable.appendChild(tr);
-        }
-
-        resultado.style.display = "block";
-      } catch (err) {
-        error.textContent = `Erro: ${err.message}`;
-        error.style.display = "block";
-      } finally {
-        loading.style.display = "none";
-      }
-    });
-  </script>
 </body>
 </html>

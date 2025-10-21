@@ -54,7 +54,8 @@ Objetivo de aprendizagem da BNCC: Alinhado à Base Nacional Comum Curricular;
 Passo a passo da atividade: Roteiro detalhado para execução;
 Rubrica de avaliação: Critérios para a professora avaliar o aprendizado;
 O tamanho do plano deve ser adequado à duração informada e o nível de dificuldade.
-A rigorosidade de verificação do JSON é essencial, e o critério de avaliação deve ser maior de acordo com o nível.
+A rigorosidade de verificação do JSON é essencial, e o critério de avaliação deve ser maior de acordo com o nível;
+Consulte os materiais de apoio da BNCC para formular os objetivos de aprendizagem corretamente com base na série especificada.
 `;
     if (!process.env.GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY não definida no arquivo .env");
