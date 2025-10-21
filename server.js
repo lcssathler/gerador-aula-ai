@@ -25,26 +25,36 @@ app.post("/api/gerar-plano", async (req, res) => {
     }
 
     const prompt = `
-Gere um plano de aula estruturado em JSON com os seguintes campos:
+Gere um plano de aula estruturado em JSON (retorne apenas o objeto JSON, sem marcações como \`\`\`json):
 {
   "introducao": "texto lúdico de introdução",
   "objetivo_bncc": "objetivo da BNCC",
-  "passo_a_passo": ["passo 1", "passo 2", "..."],
-  "rubrica": {"criterio1": "descrição", "criterio2": "descrição"}
+  "passo_a_passo": {
+    "passo1": "descrição do primeiro passo",
+    "passo2": "descrição do segundo passo",
+    "passo3": "descrição do terceiro passo",
+    ...
+  },
+  "rubrica": {
+    "criterio1": "descrição do critério 1",
+    "criterio2": "descrição do critério 2",
+    ...
+  }
 }
 Baseado nos dados:
-Tema: ${tema}
-Série: ${serie}
-Disciplina: ${disciplina}
-Duração: ${duracao} minutos
-Nível: ${nivel_dificuldade}
-Contexto: ${contexto || "não informado"}
+- Tema: ${tema}
+- Série: ${serie}
+- Disciplina: ${disciplina}
+- Duração: ${duracao} minutos
+- Nível: ${nivel_dificuldade}
+- Contexto: ${contexto || "não informado"}
 Seguindo as instruções:
 Introdução lúdica: Forma criativa e engajadora de apresentar o tema;
 Objetivo de aprendizagem da BNCC: Alinhado à Base Nacional Comum Curricular;
 Passo a passo da atividade: Roteiro detalhado para execução;
 Rubrica de avaliação: Critérios para a professora avaliar o aprendizado;
-
+O tamanho do plano deve ser adequado à duração informada e o nível de dificuldade.
+A rigorosidade de verificação do JSON é essencial, e o critério de avaliação deve ser maior de acordo com o nível.
 `;
     if (!process.env.GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY não definida no arquivo .env");

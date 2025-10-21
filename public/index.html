@@ -2,13 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Planos de Aula</title>
-  <style>
-    body{font-family:sans-serif;margin:2rem}
-    form{display:grid;gap:8px;max-width:480px}
-    input,select,textarea,button{padding:8px}
-    pre{background:#f4f4f4;padding:1em;border-radius:6px}
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Gerador de Planos de Aula</h1>
@@ -19,42 +15,43 @@
     <input name="duracao" type="number" placeholder="Duração (minutos)" required />
     <select name="nivel_dificuldade" required>
       <option value="">Selecione...</option>
-      <option>Básico</option>
-      <option>Intermediário</option>
-      <option>Avançado</option>
+      <option value="Básico">Básico</option>
+      <option value="Intermediário">Intermediário</option>
+      <option value="Avançado">Avançado</option>
     </select>
     <textarea name="contexto" placeholder="Contexto opcional"></textarea>
     <button type="submit">Gerar Plano</button>
   </form>
 
-  <div id="resultado"></div>
+  <div id="resultado" class="plano-container" style="display: none;">
+    <h2>Plano de Aula</h2>
+    <p><strong>Tema:</strong> <span id="plano-tema"></span></p>
+    <p><strong>Série:</strong> <span id="plano-serie"></span></p>
+    <p><strong>Disciplina:</strong> <span id="plano-disciplina"></span></p>
+    <p><strong>Duração:</strong> <span id="plano-duracao"></span> minutos</p>
+    <p><strong>Nível de Dificuldade:</strong> <span id="plano-nivel"></span></p>
+    <p><strong>Introdução:</strong> <span id="plano-introducao"></span></p>
+    <p><strong>Objetivo BNCC:</strong> <span id="plano-objetivo"></span></p>
+    <h3>Passo a Passo</h3>
+    <ol id="plano-passo-a-passo"></ol>
+    <h3>Rúbrica de Avaliação</h3>
+    <table class="rubrica-table">
+      <thead>
+        <tr>
+          <th>Critério</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody id="plano-rubrica"></tbody>
+    </table>
+  </div>
 
-  <script>
-    const form = document.getElementById("form");
-    const resultado = document.getElementById("resultado");
+  <div id="loading" class="loading" style="display: none;">Gerando plano...</div>
+  <div id="error" class="error" style="display: none;"></div>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      resultado.innerHTML = "<p>Gerando plano...</p>";
-
-      const data = Object.fromEntries(new FormData(form));
-      const resp = await fetch("/api/gerar-plano", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const json = await resp.json();
-      if (json.plano) {
-        resultado.innerHTML = "<pre>" + JSON.stringify(json.plano, null, 2) + "</pre>";
-      } else {
-        resultado.innerHTML = `<p style="color:red">Erro: ${json.erro || "Falha desconhecida"}</p>`;
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html> -->
-
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -144,7 +141,8 @@
 
         const passoAPassoList = document.getElementById("plano-passo-a-passo");
         passoAPassoList.innerHTML = "";
-        json.plano.passo_a_passo.forEach(passo => {
+        const passosArray = Object.values(json.plano.passo_a_passo); 
+        passosArray.forEach(passo => {
           const li = document.createElement("li");
           li.textContent = passo;
           passoAPassoList.appendChild(li);

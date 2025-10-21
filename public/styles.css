@@ -1,11 +1,10 @@
-/* Tema inspirado no Angular: preto, roxo e gradientes */
 :root {
-  --primary-dark: #1a1a1a; /* Preto escuro */
-  --primary-purple: #6b21a8; /* Roxo escuro */
-  --secondary-purple: #9333ea; /* Roxo claro */
-  --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea); /* Gradiente roxo */
-  --text-light: #f3e8ff; /* Texto claro para fundo escuro */
-  --accent: #d8b4fe; /* Roxo claro para destaques */
+  --primary-dark: #1a1a1a; 
+  --primary-purple: #6b21a8;
+  --secondary-purple: #9333ea;
+  --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea); 
+  --text-light: #f3e8ff; 
+  --accent: #d8b4fe; 
 }
 
 body {
