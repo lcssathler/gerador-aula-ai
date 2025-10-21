@@ -39,6 +39,12 @@ Disciplina: ${disciplina}
 Duração: ${duracao} minutos
 Nível: ${nivel_dificuldade}
 Contexto: ${contexto || "não informado"}
+Seguindo as instruções:
+Introdução lúdica: Forma criativa e engajadora de apresentar o tema;
+Objetivo de aprendizagem da BNCC: Alinhado à Base Nacional Comum Curricular;
+Passo a passo da atividade: Roteiro detalhado para execução;
+Rubrica de avaliação: Critérios para a professora avaliar o aprendizado;
+
 `;
     if (!process.env.GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY não definida no arquivo .env");
