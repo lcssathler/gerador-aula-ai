@@ -1,7 +1,7 @@
 :root {
-  --primary-dark: #1a1a1a; 
-  --primary-purple: #6b21a8;
-  --secondary-purple: #9333ea;
+  --primary-dark: #1a1a1a;
+  --primary-purple: #6b21a8; 
+  --secondary-purple: #9333ea; 
   --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea); 
   --text-light: #f3e8ff; 
   --accent: #d8b4fe; 
@@ -20,7 +20,6 @@ h1 {
   font-size: 2.5rem;
   background: var(--gradient-bg);
   -webkit-background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 2rem;
 }
@@ -137,6 +136,13 @@ button:hover {
   margin-top: 1rem;
 }
 
+.success {
+  text-align: center;
+  color: #34d399;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
 .export-btn {
   display: block;
   margin: 1rem auto 0;
@@ -155,7 +161,6 @@ button:hover {
   box-shadow: 0 4px 12px rgba(147, 51, 234, 0.5);
 }
 
-/* Responsividade */
 @media (max-width: 600px) {
   body {
     margin: 1rem;

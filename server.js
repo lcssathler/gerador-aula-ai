@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
+import multer from "multer";
 
 dotenv.config();
 const app = express();
@@ -10,10 +11,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+const upload = multer({ storage: multer.memoryStorage() });
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
+function sanitizeFileName(name) {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") 
+    .replace(/[^a-zA-Z0-9-_]/g, "_")
+    .replace(/_+/g, "_");
+}
 
 app.post("/api/gerar-plano", async (req, res) => {
   try {
@@ -73,7 +84,18 @@ Consulte os materiais de apoio da BNCC para formular os objetivos de aprendizage
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("Resposta inválida da IA");
     console.log("Gemini response:", JSON.stringify(geminiRes.data, null, 2));
+
     const plano = JSON.parse(jsonMatch[0]);
+    if (
+      !plano.introducao ||
+      !plano.objetivo_bncc ||
+      !plano.passo_a_passo ||
+      typeof plano.passo_a_passo !== "object" ||
+      !plano.rubrica ||
+      typeof plano.rubrica !== "object"
+    ) {
+      throw new Error("Estrutura do plano de aula retornada é inválida");
+    }
 
     const { error } = await supabase.from("lesson_plans").insert([
       {
@@ -95,6 +117,44 @@ Consulte os materiais de apoio da BNCC para formular os objetivos de aprendizage
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: err.message });
+  }
+});
+
+app.post("/api/upload-pdf", upload.single("pdf"), async (req, res) => {
+  try {
+    const { file } = req;
+    const { tema } = req.body;
+
+    if (!file) {
+      return res.status(400).json({ erro: "Nenhum arquivo PDF enviado" });
+    }
+
+    const sanitizedTema = sanitizeFileName(tema);
+    const fileName = `plano_${sanitizedTema}_${Date.now()}.pdf`;
+    
+    const { data, error } = await supabase.storage
+      .from("planos_de_aula_pdf")
+      .upload(fileName, file.buffer, {
+        contentType: "application/pdf",
+      });
+
+    if (error) {
+      console.error("Erro ao fazer upload no Supabase:", error);
+      throw new Error(`Erro no upload: ${error.message}`);
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("planos_de_aula_pdf")
+      .getPublicUrl(fileName);
+
+    res.json({
+      sucesso: true,
+      message: "PDF salvo com sucesso no Supabase",
+      publicUrl: publicData.publicUrl,
+    });
+  } catch (err) {
+    console.error("Erro no endpoint /api/upload-pdf:", err);
+    res.status(500).json({ erro: err.message || "Erro interno do servidor" });
   }
 });
 

@@ -3,6 +3,17 @@ const resultado = document.getElementById("resultado");
 const loading = document.getElementById("loading");
 const error = document.getElementById("error");
 const exportPdfButton = document.getElementById("export-pdf");
+const uploadStatus = document.getElementById("upload-status");
+
+function checkAndAddPage(doc, y, margin = 10) {
+  const pageHeight = doc.internal.pageSize.height;
+  const maxY = pageHeight - margin;
+  if (y > maxY) {
+    doc.addPage();
+    return margin;
+  }
+  return y;
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -11,7 +22,7 @@ form.addEventListener("submit", async (e) => {
   loading.style.display = "block";
 
   const data = Object.fromEntries(new FormData(form));
-  data.duracao = parseInt(data.duracao); 
+  data.duracao = parseInt(data.duracao);
 
   try {
     const resp = await fetch("/api/gerar-plano", {
@@ -37,7 +48,7 @@ form.addEventListener("submit", async (e) => {
 
     const passoAPassoList = document.getElementById("plano-passo-a-passo");
     passoAPassoList.innerHTML = "";
-    const passosArray = Object.values(json.plano.passo_a_passo); 
+    const passosArray = Object.values(json.plano.passo_a_passo);
     passosArray.forEach((passo) => {
       const li = document.createElement("li");
       li.textContent = passo;
@@ -52,60 +63,119 @@ form.addEventListener("submit", async (e) => {
       rubricaTable.appendChild(tr);
     }
 
-    exportPdfButton.onclick = () => {
+    exportPdfButton.onclick = async () => {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       let y = 10;
+      const margin = 10;
+      const lineHeight = 7;
 
       doc.setFontSize(16);
+      y = checkAndAddPage(doc, y, margin);
       doc.text("Plano de Aula", 10, y);
       y += 10;
 
       doc.setFontSize(12);
+      y = checkAndAddPage(doc, y, margin);
       doc.text(`Tema: ${data.tema}`, 10, y);
-      y += 7;
+      y += lineHeight;
+      y = checkAndAddPage(doc, y, margin);
       doc.text(`Série: ${data.serie}`, 10, y);
-      y += 7;
+      y += lineHeight;
+      y = checkAndAddPage(doc, y, margin);
       doc.text(`Disciplina: ${data.disciplina}`, 10, y);
-      y += 7;
+      y += lineHeight;
+      y = checkAndAddPage(doc, y, margin);
       doc.text(`Duração: ${data.duracao} minutos`, 10, y);
-      y += 7;
+      y += lineHeight;
+      y = checkAndAddPage(doc, y, margin);
       doc.text(`Nível de Dificuldade: ${data.nivel_dificuldade}`, 10, y);
       y += 10;
 
+      y = checkAndAddPage(doc, y, margin);
       doc.text("Introdução:", 10, y);
-      y += 7;
+      y += lineHeight;
       const introducaoLines = doc.splitTextToSize(json.plano.introducao, 180);
-      doc.text(introducaoLines, 10, y);
-      y += introducaoLines.length * 7 + 5;
+      for (const line of introducaoLines) {
+        y = checkAndAddPage(doc, y, margin);
+        doc.text(line, 10, y);
+        y += lineHeight;
+      }
+      y += 5;
 
+      y = checkAndAddPage(doc, y, margin);
       doc.text("Objetivo BNCC:", 10, y);
-      y += 7;
+      y += lineHeight;
       const objetivoLines = doc.splitTextToSize(json.plano.objetivo_bncc, 180);
-      doc.text(objetivoLines, 10, y);
-      y += objetivoLines.length * 7 + 5;
+      for (const line of objetivoLines) {
+        y = checkAndAddPage(doc, y, margin);
+        doc.text(line, 10, y);
+        y += lineHeight;
+      }
+      y += 5;
 
+      y = checkAndAddPage(doc, y, margin);
       doc.text("Passo a Passo:", 10, y);
-      y += 7;
+      y += lineHeight;
       passosArray.forEach((passo, index) => {
         const passoLines = doc.splitTextToSize(`${index + 1}. ${passo}`, 180);
-        doc.text(passoLines, 10, y);
-        y += passoLines.length * 7;
+        for (const line of passoLines) {
+          y = checkAndAddPage(doc, y, margin);
+          doc.text(line, 10, y);
+          y += lineHeight;
+        }
       });
       y += 5;
 
+      y = checkAndAddPage(doc, y, margin);
       doc.text("Rúbrica de Avaliação:", 10, y);
-      y += 7;
+      y += lineHeight;
       for (const [criterio, descricao] of Object.entries(json.plano.rubrica)) {
+        y = checkAndAddPage(doc, y, margin);
         const criterioLine = `Critério: ${criterio}`;
         doc.text(criterioLine, 10, y);
-        y += 7;
+        y += lineHeight;
         const descricaoLines = doc.splitTextToSize(descricao, 180);
-        doc.text(descricaoLines, 10, y);
-        y += descricaoLines.length * 7 + 3;
+        for (const line of descricaoLines) {
+          y = checkAndAddPage(doc, y, margin);
+          doc.text(line, 10, y);
+          y += lineHeight;
+        }
+        y += 3;
       }
 
-      doc.save("plano_de_aula.pdf");
+      const pdfBlob = doc.output("blob");
+
+      const formData = new FormData();
+      formData.append(
+        "pdf",
+        pdfBlob,
+        `plano_${data.tema.replace(/\s+/g, "_")}.pdf`
+      );
+      formData.append("tema", data.tema);
+
+      try {
+        uploadStatus.style.display = "block";
+        uploadStatus.className = "loading";
+        uploadStatus.textContent = "Enviando PDF para o Supabase...";
+
+        const uploadResp = await fetch("/api/upload-pdf", {
+          method: "POST",
+          body: formData,
+        });
+
+        const uploadJson = await uploadResp.json();
+        if (!uploadResp.ok || !uploadJson.sucesso) {
+          throw new Error(uploadJson.erro || "Falha ao enviar o PDF");
+        }
+
+        uploadStatus.className = "success";
+        uploadStatus.textContent = `PDF salvo com sucesso!`;
+        doc.save("plano_de_aula.pdf");
+      } catch (uploadErr) {
+        uploadStatus.className = "error";
+        uploadStatus.textContent = `Erro ao salvar PDF: ${uploadErr.message}`;
+      }
     };
 
     resultado.style.display = "block";
