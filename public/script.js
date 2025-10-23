@@ -5,7 +5,6 @@ const error = document.getElementById("error");
 const exportPdfButton = document.getElementById("export-pdf");
 const uploadStatus = document.getElementById("upload-status");
 
-<<<<<<< HEAD
 document.addEventListener("DOMContentLoaded", async () => {
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   if (!isAuthenticated) {
@@ -24,8 +23,6 @@ document.getElementById("logout").addEventListener("click", async () => {
   window.location.href = "/login.html";
 });
 
-=======
->>>>>>> f66cc049157a6a3491eabe95b5822b93baf9838f
 function checkAndAddPage(doc, y, margin = 10) {
   const pageHeight = doc.internal.pageSize.height;
   const maxY = pageHeight - margin;
