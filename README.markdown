@@ -1,13 +1,13 @@
 # Gerador de Planos de Aula com IA
 
-Este projeto é um sistema que gera planos de aula personalizados utilizando a IA do Google Gemini API, integrado com Supabase para autenticação e armazenamento. Ele atende ao Teste Técnico 2 para a vaga de Desenvolvedor Júnior/Estagiário (Supabase Backend Dev Desafio 2025).
+Teste Técnico 2 para a vaga de Desenvolvedor Júnior/Estagiário (Supabase Backend Dev Desafio 2025).
 
 ## Instruções de Instalação
 
 1. **Pré-requisitos**:
    - Node.js (versão 18 ou superior)
    - npm (geralmente instalado com Node.js)
-   - Acesso ao Supabase (crie um projeto em supabase.com)
+   - Supabase API
    - Chave API do Google Gemini (obtenha em ai.google.dev)
 
 2. **Clonar o Repositório**:
