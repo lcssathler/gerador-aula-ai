@@ -28,7 +28,7 @@ Teste Técnico 2 para a vaga de Desenvolvedor Júnior/Estagiário (Supabase Back
      SUPABASE_SERVICE_ROLE_KEY=seu-supabase-service-role-key
      GEMINI_API_KEY=sua-chave-gemini
      ```
-   - Substitua os valores pelas credenciais do Supabase e da Gemini API.
+   - Substitua os valores pelas credenciais do Supabase e da Gemini API (Está dentro de GitHub Secrets, e enviei o arquivo original via email).
 
 5. **Executar o Projeto**:
    ```bash
@@ -103,7 +103,7 @@ O modelo escolhido foi o **Gemini 2.0 Flash**, devido à sua eficiência e capac
 - **Salvamento no Supabase**: Armazena planos e associa a usuários autenticados.
 - **Exibição**: Mostra o plano gerado na interface.
 - **Autenticação**: Usuários devem se cadastrar e fazer login via Supabase para gerar planos.
-- **Exportação PDF**: Permite salvar o plano como PDF.
+- **Exportação PDF**: Permite baixar o plano como PDF e salvá-lo dentro do Storage do Supabase.
 - **Tratamento de Erros**: Exibe mensagens de erro em caso de falhas.
 
 ## Decisões Técnicas
@@ -123,5 +123,3 @@ O modelo escolhido foi o **Gemini 2.0 Flash**, devido à sua eficiência e capac
 - **Credenciais de Teste**: Usuário `teste@example.com`, senha `123456` (cadastre-se se necessário)
 - **Link Supabase**: Disponível no Dashboard Supabase após configuração.
 
-## Contato
-Para dúvidas, entre em contato via [seu-email@exemplo.com](mailto:seu-email@exemplo.com).
