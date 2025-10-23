@@ -21,6 +21,7 @@ const checkAuth = async () => {
   return session?.access_token || null;
 };
 
+
 async function init() {
   const authToken = await checkAuth();
   if (!authToken) {
