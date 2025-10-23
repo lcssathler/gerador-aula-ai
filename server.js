@@ -17,6 +17,26 @@ app.get("/", (req, res) => {
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+const authenticate = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  console.log("Token recebido:", token);
+  if (!token) {
+    return res.status(401).json({ erro: 'Token de autenticação ausente' });
+  }
+
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+
+  if (error || !user) {
+    return res.status(401).json({ erro: 'Usuário não autenticado' });
+  }
+
+  req.user = user;
+  console.log("Usuário autenticado:", user.email);
+  console.log("UID do usuário:", user.uid); 
+  next();
+};
+
 const requiredEnvVars = [
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
@@ -43,7 +63,7 @@ function sanitizeFileName(name) {
     .replace(/_+/g, "_");
 }
 
-app.post("/api/gerar-plano", async (req, res) => {
+app.post("/api/gerar-plano", authenticate,  async (req, res) => {
   try {
     const { tema, serie, disciplina, duracao, nivel_dificuldade, contexto } =
       req.body;
@@ -125,6 +145,7 @@ Consulte os materiais de apoio da BNCC para formular os objetivos de aprendizage
         objetivo_bncc: plano.objetivo_bncc,
         passo_a_passo: plano.passo_a_passo,
         rubrica: plano.rubrica,
+        user_id: req.user.id,
       },
     ]);
 
@@ -137,7 +158,7 @@ Consulte os materiais de apoio da BNCC para formular os objetivos de aprendizage
   }
 });
 
-app.post("/api/upload-pdf", upload.single("pdf"), async (req, res) => {
+app.post("/api/upload-pdf", authenticate, upload.single("pdf"), async (req, res) => {
   try {
     const { file } = req;
     const { tema } = req.body;
