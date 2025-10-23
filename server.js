@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+<<<<<<< HEAD
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/login.html");
 });
@@ -30,6 +31,10 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
+=======
+const upload = multer({ storage: multer.memoryStorage() });
+
+>>>>>>> f66cc049157a6a3491eabe95b5822b93baf9838f
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -38,7 +43,11 @@ const supabase = createClient(
 function sanitizeFileName(name) {
   return name
     .normalize("NFD")
+<<<<<<< HEAD
     .replace(/[\u0300-\u036f]/g, "")
+=======
+    .replace(/[\u0300-\u036f]/g, "") 
+>>>>>>> f66cc049157a6a3491eabe95b5822b93baf9838f
     .replace(/[^a-zA-Z0-9-_]/g, "_")
     .replace(/_+/g, "_");
 }
@@ -148,7 +157,11 @@ app.post("/api/upload-pdf", upload.single("pdf"), async (req, res) => {
 
     const sanitizedTema = sanitizeFileName(tema);
     const fileName = `plano_${sanitizedTema}_${Date.now()}.pdf`;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> f66cc049157a6a3491eabe95b5822b93baf9838f
     const { data, error } = await supabase.storage
       .from("planos_de_aula_pdf")
       .upload(fileName, file.buffer, {

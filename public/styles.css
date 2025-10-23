@@ -1,10 +1,18 @@
 :root {
   --primary-dark: #1a1a1a;
+<<<<<<< HEAD
   --primary-purple: #6b21a8;
   --secondary-purple: #9333ea;
   --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea);
   --text-light: #f3e8ff;
   --accent: #d8b4fe;
+=======
+  --primary-purple: #6b21a8; 
+  --secondary-purple: #9333ea; 
+  --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea); 
+  --text-light: #f3e8ff; 
+  --accent: #d8b4fe; 
+>>>>>>> f66cc049157a6a3491eabe95b5822b93baf9838f
 }
 
 body {
