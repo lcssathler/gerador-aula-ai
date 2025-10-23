@@ -1,56 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de Planos de Aula</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head>
-<body>
-  <h1>Gerador de Planos de Aula</h1>
-  <form id="form">
-    <input name="tema" placeholder="Tema" required />
-    <input name="serie" placeholder="Série" required />
-    <input name="disciplina" placeholder="Disciplina" required />
-    <input name="duracao" type="number" placeholder="Duração (minutos)" required />
-    <select name="nivel_dificuldade" required>
-      <option value="">Selecione...</option>
-      <option value="Básico">Básico</option>
-      <option value="Intermediário">Intermediário</option>
-      <option value="Avançado">Avançado</option>
-    </select>
-    <textarea name="contexto" placeholder="Contexto opcional"></textarea>
-    <button type="submit">Gerar Plano</button>
-  </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerador de Planos de Aula</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <h1>Gerador de Planos de Aula</h1>
+    <button id="logout">Sair</button>
+    <form id="form">
+      <input name="tema" placeholder="Tema" required />
+      <input name="serie" placeholder="Série" required />
+      <input name="disciplina" placeholder="Disciplina" required />
+      <input
+        name="duracao"
+        type="number"
+        placeholder="Duração (minutos)"
+        required
+      />
+      <select name="nivel_dificuldade" required>
+        <option value="">Selecione...</option>
+        <option value="Básico">Básico</option>
+        <option value="Intermediário">Intermediário</option>
+        <option value="Avançado">Avançado</option>
+      </select>
+      <textarea name="contexto" placeholder="Contexto opcional"></textarea>
+      <button type="submit">Gerar Plano</button>
+    </form>
 
-  <div id="resultado" class="plano-container" style="display: none;">
-    <h2>Plano de Aula</h2>
-    <p><strong>Tema:</strong> <span id="plano-tema"></span></p>
-    <p><strong>Série:</strong> <span id="plano-serie"></span></p>
-    <p><strong>Disciplina:</strong> <span id="plano-disciplina"></span></p>
-    <p><strong>Duração:</strong> <span id="plano-duracao"></span> minutos</p>
-    <p><strong>Nível de Dificuldade:</strong> <span id="plano-nivel"></span></p>
-    <p><strong>Introdução:</strong> <span id="plano-introducao"></span></p>
-    <p><strong>Objetivo BNCC:</strong> <span id="plano-objetivo"></span></p>
-    <button id="export-pdf" class="export-btn">Exportar como PDF</button>
-    <h3>Passo a Passo</h3>
-    <ol id="plano-passo-a-passo"></ol>
-    <h3>Rúbrica de Avaliação</h3>
-    <table class="rubrica-table">
-      <thead>
-        <tr>
-          <th>Critério</th>
-          <th>Descrição</th>
-        </tr>
-      </thead>
-      <tbody id="plano-rubrica"></tbody>
-    </table>
-  </div>
+    <div id="resultado" class="plano-container" style="display: none">
+      <h2>Plano de Aula</h2>
+      <p><strong>Tema:</strong> <span id="plano-tema"></span></p>
+      <p><strong>Série:</strong> <span id="plano-serie"></span></p>
+      <p><strong>Disciplina:</strong> <span id="plano-disciplina"></span></p>
+      <p><strong>Duração:</strong> <span id="plano-duracao"></span> minutos</p>
+      <p>
+        <strong>Nível de Dificuldade:</strong> <span id="plano-nivel"></span>
+      </p>
+      <p><strong>Introdução:</strong> <span id="plano-introducao"></span></p>
+      <p><strong>Objetivo BNCC:</strong> <span id="plano-objetivo"></span></p>
+      <button id="export-pdf" class="export-btn">Exportar como PDF</button>
+      <div id="upload-status" style="display: none"></div>
+      <h3>Passo a Passo</h3>
+      <ol id="plano-passo-a-passo"></ol>
+      <h3>Rúbrica de Avaliação</h3>
+      <table class="rubrica-table">
+        <thead>
+          <tr>
+            <th>Critério</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody id="plano-rubrica"></tbody>
+      </table>
+    </div>
 
-  <div id="loading" class="loading" style="display: none;">Gerando plano...</div>
-  <div id="error" class="error" style="display: none;"></div>
+    <div id="loading" class="loading" style="display: none">
+      Gerando plano...
+    </div>
+    <div id="error" class="error" style="display: none"></div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

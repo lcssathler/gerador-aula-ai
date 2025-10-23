@@ -1,14 +1,14 @@
 :root {
-  --primary-dark: #1a1a1a; 
+  --primary-dark: #1a1a1a;
   --primary-purple: #6b21a8;
   --secondary-purple: #9333ea;
-  --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea); 
-  --text-light: #f3e8ff; 
-  --accent: #d8b4fe; 
+  --gradient-bg: linear-gradient(135deg, #4c1d95, #9333ea);
+  --text-light: #f3e8ff;
+  --accent: #d8b4fe;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: var(--primary-dark);
   color: var(--text-light);
   margin: 2rem;
@@ -20,13 +20,41 @@ h1 {
   font-size: 2.5rem;
   background: var(--gradient-bg);
   -webkit-background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 2rem;
 }
 
-h2, h3 {
+h2,
+h3 {
   color: var(--accent);
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form[style*="display: block"] {
+  display: block;
+}
+
+.auth-container,
+.main-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+#toggle-signup {
+  color: var(--secondary-purple);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 10px;
+  text-decoration: none;
 }
 
 form {
@@ -40,7 +68,9 @@ form {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   padding: 10px;
   border: 1px solid var(--primary-purple);
   border-radius: 4px;
@@ -49,7 +79,9 @@ input, select, textarea {
   font-size: 1rem;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--secondary-purple);
   box-shadow: 0 0 8px rgba(147, 51, 234, 0.5);
@@ -61,9 +93,12 @@ textarea {
 }
 
 button {
+  display: block;
   background: var(--gradient-bg);
+  max-width: fit-content;
+  margin: 0 auto 20px auto;
   color: var(--text-light);
-  padding: 12px;
+  padding: 8px 33px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -108,7 +143,8 @@ button:hover {
   margin-top: 10px;
 }
 
-.rubrica-table th, .rubrica-table td {
+.rubrica-table th,
+.rubrica-table td {
   border: 1px solid var(--primary-purple);
   padding: 10px;
   text-align: left;
@@ -137,6 +173,13 @@ button:hover {
   margin-top: 1rem;
 }
 
+.success {
+  text-align: center;
+  color: #34d399;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
 .export-btn {
   display: block;
   margin: 1rem auto 0;
@@ -155,12 +198,12 @@ button:hover {
   box-shadow: 0 4px 12px rgba(147, 51, 234, 0.5);
 }
 
-/* Responsividade */
 @media (max-width: 600px) {
   body {
     margin: 1rem;
   }
-  form, .plano-container {
+  form,
+  .plano-container {
     max-width: 100%;
   }
   h1 {

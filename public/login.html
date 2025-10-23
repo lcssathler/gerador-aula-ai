@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Gerador de Planos de Aula</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const supabaseUrl = 'https://sxzzekfiggpmarmgckbo.supabase.co';
+      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4enpla2ZpZ2dwbWFybWdja2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNDI2NzksImV4cCI6MjA3NjYxODY3OX0.AwCBFjW5_kixlIwFZvnb1np0ZFeoV7A5nEMkqVBHlns';
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const toggleSignup = document.getElementById('toggle-signup');
+      const toggleLogin = document.getElementById('toggle-login');
+
+      toggleSignup.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+      });
+
+      toggleLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      });
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          alert(`Erro no login: ${error.message}`);
+        } else {
+          localStorage.setItem('isAuthenticated', 'true');
+          window.location.href = '/index.html';
+        }
+      });
+
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (error) {
+          alert(`Erro no cadastro: ${error.message}`);
+        } else {
+          alert('Cadastro realizado! Verifique seu e-mail para confirmação e faça login.');
+          signupForm.style.display = 'none';
+          loginForm.style.display = 'block';
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Gerador de Planos de Aula</h1>
+    <div id="login-form" class="auth-form" style="display: block;">
+      <h2>Login</h2>
+      <form>
+        <input type="email" id="login-email" placeholder="E-mail" required>
+        <input type="password" id="login-password" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+      </form>
+      <p>Não tem conta? <a href="#" id="toggle-signup">Cadastre-se</a></p>
+    </div>
+    <div id="signup-form" class="auth-form" style="display: none;">
+      <h2>Cadastro</h2>
+      <form>
+        <input type="email" id="signup-email" placeholder="E-mail" required>
+        <input type="password" id="signup-password" placeholder="Senha" required>
+        <button type="submit">Cadastrar</button>
+      </form>
+      <p>Já tem conta? <a href="#" id="toggle-login">Faça login</a></p>
+    </div>
+  </div>
+</body>
+</html>
